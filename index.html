@@ -99,11 +99,23 @@
       .slick-slide {
         width: 130px;
       }
+
+      #recording-btn {
+        position: fixed;
+        top: 0px;
+        left: 0px;
+        width: 200px;
+        height: 80px;
+        z-index: 99999;
+      }
+
     </style>
     <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
 
   </head>
   <body>
+
+    <button id="recording-btn">Start/stop video recording</button>
 
     <canvas class="deepar" id="deepar-canvas" oncontextmenu="event.preventDefault()"></canvas>
     <div id="loader-wrapper">
@@ -186,6 +198,21 @@
       };
 
       deepAR.downloadFaceTrackingModel('lib/models-68-extreme.bin');
+
+      let isRecording = false;
+      document.getElementById('recording-btn').onclick = function(e) {
+        if(!isRecording) {
+          isRecording = true;
+          deepAR.startVideoRecording();
+          console.log("Recording started!");
+        } else {
+          deepAR.finishVideoRecording(function(video) {
+            window.open(URL.createObjectURL(video), '_blank').focus();
+            console.log("Recording finished!");
+            isRecording = false;
+          });
+        }
+      };
 
       // Store video objects for cleanup
       var videoObjects = {};
